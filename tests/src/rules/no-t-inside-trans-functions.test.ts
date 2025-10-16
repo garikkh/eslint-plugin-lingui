@@ -1,5 +1,5 @@
-import { RuleTester } from 'eslint'
-import rule from '../../../src/rules/no-t-inside-trans-functions'
+import { RuleTester } from '@typescript-eslint/rule-tester'
+import { rule, name } from '../../../src/rules/no-t-inside-trans-functions'
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run('no-t-inside-trans-functions', rule, {
+ruleTester.run(name, rule, {
   valid: [
     {
       code: `const message = t\`Hello\``,
@@ -43,12 +43,12 @@ ruleTester.run('no-t-inside-trans-functions', rule, {
           other: t\`There are \${count} books\`,
         });
       `,
-      errors: [{ messageId: 'noTInsideTransFunctions' }],
+      errors: [{ messageId: 'default' }],
     },
     {
       // Invalid: `t` inside `Plural`
       code: `<Plural value={count} one="one book" other={t\`\${count} books\`} />`,
-      errors: [{ messageId: 'noTInsideTransFunctions' }],
+      errors: [{ messageId: 'default' }],
     },
     {
       // Invalid: `t` inside `Trans`
@@ -57,11 +57,11 @@ ruleTester.run('no-t-inside-trans-functions', rule, {
           {t\`Hello\`}
         </Trans>;
       `,
-      errors: [{ messageId: 'noTInsideTransFunctions' }],
+      errors: [{ messageId: 'default' }],
     },
     {
       code: `t\`some text \${t\`some other text\`}\``,
-      errors: [{ messageId: 'noTInsideTransFunctions' }],
+      errors: [{ messageId: 'default' }],
     },
   ],
 })

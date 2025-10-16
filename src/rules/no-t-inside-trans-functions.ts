@@ -1,24 +1,30 @@
-import { Rule } from 'eslint'
 import { TSESTree } from '@typescript-eslint/utils'
+import { createRule } from '../create-rule'
 
-const rule: Rule.RuleModule = {
+export const name = 'no-t-call-inside-trans-functions'
+export const rule = createRule({
+  name,
   meta: {
-    type: 'problem',
     docs: {
       description: 'Disallow `t` function calls inside translation functions or components',
-      category: 'Best Practices',
-      recommended: false,
+      recommended: 'error',
     },
     messages: {
-      noTInsideTransFunctions:
+      default:
         '`t` function calls cannot be used inside `Trans`, `Plural` components, `plural` function calls, or other `t` calls.',
     },
-    schema: [], // No options for this rule
+    schema: [
+      {
+        type: 'object',
+        properties: {},
+        additionalProperties: false,
+      },
+    ],
+    type: 'problem' as const,
   },
+  defaultOptions: [],
 
   create: (context) => {
-    const sourceCode = context.sourceCode ?? context.getSourceCode()
-
     function isInsideTransFunction(node: TSESTree.Node): boolean {
       let parent = node.parent
 
@@ -63,7 +69,7 @@ const rule: Rule.RuleModule = {
         if (isInsideTransFunction(node)) {
           context.report({
             node,
-            messageId: 'noTInsideTransFunctions',
+            messageId: 'default',
           })
         }
       },
@@ -72,12 +78,13 @@ const rule: Rule.RuleModule = {
         if (isInsideTransFunction(node)) {
           context.report({
             node,
-            messageId: 'noTInsideTransFunctions',
+            messageId: 'default',
           })
         }
       },
     }
   },
-}
+})
 
+// Export as default for compatibility with test
 export default rule
