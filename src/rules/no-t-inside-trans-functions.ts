@@ -11,7 +11,7 @@ const rule: Rule.RuleModule = {
     },
     messages: {
       noTInsideTransFunctions:
-        '`t` function calls cannot be used inside `Trans`, `Plural` components or `plural` function calls.',
+        '`t` function calls cannot be used inside `Trans`, `Plural` components, `plural` function calls, or other `t` calls.',
     },
     schema: [], // No options for this rule
   },
@@ -34,6 +34,20 @@ const rule: Rule.RuleModule = {
         // Check for function calls: plural()
         if (parent.type === 'CallExpression' && parent.callee.type === 'Identifier') {
           if (parent.callee.name === 'plural') {
+            return true
+          }
+        }
+
+        // Check for nested t calls: t`some text ${t`nested`}`
+        if (parent.type === 'TaggedTemplateExpression' && parent.tag.type === 'Identifier') {
+          if (parent.tag.name === 't') {
+            return true
+          }
+        }
+
+        // Check for nested t function calls: t('some text', { value: t('nested') })
+        if (parent.type === 'CallExpression' && parent.callee.type === 'Identifier') {
+          if (parent.callee.name === 't') {
             return true
           }
         }

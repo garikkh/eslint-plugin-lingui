@@ -59,5 +59,9 @@ ruleTester.run('no-t-inside-trans-functions', rule, {
       `,
       errors: [{ messageId: 'noTInsideTransFunctions' }],
     },
+    {
+      code: `t\`some text \${t\`some other text\`}\``,
+      errors: [{ messageId: 'noTInsideTransFunctions' }],
+    },
   ],
 })
