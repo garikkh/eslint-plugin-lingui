@@ -51,13 +51,6 @@ export const rule = createRule({
           }
         }
 
-        // Check for nested t function calls: t('some text', { value: t('nested') })
-        if (parent.type === 'CallExpression' && parent.callee.type === 'Identifier') {
-          if (parent.callee.name === 't') {
-            return true
-          }
-        }
-
         parent = parent.parent
       }
 
@@ -66,15 +59,6 @@ export const rule = createRule({
 
     return {
       'TaggedTemplateExpression[tag.name=t]'(node: any) {
-        if (isInsideTransFunction(node)) {
-          context.report({
-            node,
-            messageId: 'default',
-          })
-        }
-      },
-
-      'CallExpression[callee.name=t]'(node: any) {
         if (isInsideTransFunction(node)) {
           context.report({
             node,
